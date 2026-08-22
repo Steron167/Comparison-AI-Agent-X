@@ -5,10 +5,17 @@ TEAM MEMBERS
 - NILESH KALE (Backend Developer )
 - SAMIKSHA GONDKAR ( Frontend Developer )
 - TANISHKA SHINDE (AI/Research)
+- 
 PROBLEM STATEMENT
-Startups waste hours tracking competitors, news, papers, patents. No single tool gives quick Al-summarized competitive intelligence.
+
+-Startups waste hours tracking competitors, news, papers, patents. No single tool gives quick Al-summarized competitive intelligence.
 Solution: Autonomous Al agent tracking topic + competitor.
+
+-integrate atleast 2 external tools/ APIs relevant to the problem. The agent should dynamically determine when and which tool to use.
+
+
 PROJECT DESCRIPTION
+
 User enters Topic + Competitor. Agent searches live news, research papers, patents via Tavily, then Groq Llama 3.3 70B Report in ~10 seconds.
 generates: Key Insights, Recent Developments, Threats, Opportunities.
 TECHNOLOGIES
@@ -22,14 +29,21 @@ FEATURES
 * Al Report with Insights/Threats/Opportunities
 * Fast, Clean UI, Production Ready
 
+APIs Used
+Tavily Api - Real time google search for agent
+GROG Api - Takes tavily raw data -> thinks -> writes final report
+
 WEB ACCESS LINK :- https://comparison-ai-agent-x.vercel.app
 
 INSTALLATION
+
 1. git clone https://github.com/Steron167/Comparison-AI-Agent-X
 2. backend: python -m venv venv; pip install -r requirements.txt
 Add backend/.env: GROQ_API_KEY, TAVILY_API_KEY
 3. frontend/my-app: npm install
+
 HOW TO RUN
+
 Backend:
 uvicorn main:app --reload --port 8000
 Frontend:
