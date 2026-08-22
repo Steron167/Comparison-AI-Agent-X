@@ -36,21 +36,3 @@ Tavily Api - Real time google search for agent
 GROG Api - Takes tavily raw data -> thinks -> writes final report
 
 WEB ACCESS LINK :- https://comparison-ai-agent-x.vercel.app
-
-INSTALLATION
-
-1. git clone https://github.com/Steron167/Comparison-AI-Agent-X
-2. backend: python -m venv venv; pip install -r requirements.txt
-Add backend/.env: GROQ_API_KEY, TAVILY_API_KEY
-3. frontend/my-app: npm install
-
-HOW TO RUN
-
-Backend:
-uvicorn main:app --reload --port 8000
-Frontend:
-npm run dev
-Open
-http://localhost:3000
-> Enter Topic + Competitor > Track
-
