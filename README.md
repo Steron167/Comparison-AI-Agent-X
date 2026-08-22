@@ -21,6 +21,9 @@ FEATURES
 * Real-time News + Research + Patents
 * Al Report with Insights/Threats/Opportunities
 * Fast, Clean UI, Production Ready
+
+WEB ACCESS LINK :- https://comparison-ai-agent-x.vercel.app
+
 INSTALLATION
 1. git clone https://github.com/Steron167/Comparison-AI-Agent-X
 2. backend: python -m venv venv; pip install -r requirements.txt
