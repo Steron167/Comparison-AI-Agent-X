@@ -12,7 +12,7 @@ export default function Home() {
     setLoading(true);
     setOut("");
     try {
-      const res = await fetch("https://comparison-ai-agent-x-1.onrender.com", {
+      const res = await fetch("https://comparison-ai-agent-x-1.onrender.com/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, competitor }),
