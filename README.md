@@ -12,7 +12,8 @@ PROJECT DESCRIPTION
 User enters Topic + Competitor. Agent searches live news, research papers, patents via Tavily, then Groq Llama 3.3 70B Report in ~10 seconds.
 generates: Key Insights, Recent Developments, Threats, Opportunities.
 TECHNOLOGIES
-Backend: Python, FastAPI | Al: Groq Llama 3.3 70B
+Backend:
+Python, FastAPI | Al: Groq Llama 3.3 70B
 Search: Tavily API | Frontend: Next.js 14, React
 Deploy: Render + Vercel | Git + GitHub
 FEATURES
@@ -26,8 +27,11 @@ INSTALLATION
 Add backend/.env: GROQ_API_KEY, TAVILY_API_KEY
 3. frontend/my-app: npm install
 HOW TO RUN
-Backend: uvicorn main:app --reload --port 8000
-Frontend: npm run dev
-Open http://localhost:3000 > Enter Topic + Competitor > Track
+Backend:
+uvicorn main:app --reload --port 8000
+Frontend:
+npm run dev
+Open
+http://localhost:3000 > Enter Topic + Competitor > Track
 DEMO LINKS
 GitHub: github.com/Steron167/Comparison-Al-Agent-X
