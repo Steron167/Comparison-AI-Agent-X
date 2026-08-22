@@ -30,7 +30,9 @@ FEATURES
 * Fast, Clean UI, Production Ready
 
 APIs Used
+
 Tavily Api - Real time google search for agent
+
 GROG Api - Takes tavily raw data -> thinks -> writes final report
 
 WEB ACCESS LINK :- https://comparison-ai-agent-x.vercel.app
