@@ -1,23 +1,56 @@
+from tavily import TavilyClient
 import os
-import requests
 from dotenv import load_dotenv
+
 load_dotenv()
+client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
-def search_web(query: str):
-    key = os.getenv("TAVILY_API_KEY")
-    if not key or key == "anything":
-        return f"Mock: Best laptops for {query} - Dell Inspiron 3520 55k, Lenovo Ideapad Slim 3 52k, HP 15s 58k, Acer Aspire 5 54k"
-
+def research_paper_search(query: str):
+    """Search latest research papers"""
     try:
-        r = requests.post(
-            "https://api.tavily.com/search",
-            json={"api_key": key, "query": query, "max_results": 5}
+        result = client.search(
+            query=f"{query} research paper arxiv semantic scholar",
+            search_depth="advanced",
+            max_results=5,
+            include_answer=True
         )
-        data = r.json()
-        results = data.get("results", [])
-        text = ""
-        for res in results:
-            text += f"{res.get('title')}: {res.get('content')[:200]} | "
-        return text if text else f"No results for {query}"
+        return {"type": "research", "data": result}
     except Exception as e:
-        return f"Search error {e} - using mock for {query}"
+        return {"error": str(e)}
+
+def patent_search(query: str):
+    """Search recent patents"""
+    try:
+        result = client.search(
+            query=f"{query} patent filing",
+            include_domains=["patents.google.com", "uspto.gov"],
+            max_results=5
+        )
+        return {"type": "patents", "data": result}
+    except Exception as e:
+        return {"error": str(e)}
+
+def competitor_news_search(company: str):
+    """Track competitor news, funding, launches"""
+    try:
+        result = client.search(
+            query=f"{company} funding launch news announcement",
+            topic="news",
+            max_results=5,
+            time_range="week"
+        )
+        return {"type": "competitor", "company": company, "data": result}
+    except Exception as e:
+        return {"error": str(e)}
+
+def social_and_industry_scan(query: str):
+    """Scan industry news + social buzz"""
+    try:
+        result = client.search(
+            query=f"{query} industry trends 2026",
+            max_results=5,
+            include_answer=True
+        )
+        return {"type": "industry", "data": result}
+    except Exception as e:
+        return {"error": str(e)}

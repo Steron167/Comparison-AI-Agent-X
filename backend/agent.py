@@ -1,27 +1,60 @@
-from groq import Groq
 import os
-from tools import search_web
+from groq import Groq
 from dotenv import load_dotenv
+from tools import research_paper_search, patent_search, competitor_news_search, social_and_industry_scan
+
 load_dotenv()
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+def run_agent(user_query: str, competitor: str = ""):
+    # Step 1: Gather data from all sources in parallel
+    research = research_paper_search(user_query)
+    patents = patent_search(user_query)
+    industry = social_and_industry_scan(user_query)
+    comp_data = competitor_news_search(competitor) if competitor else None
 
-def run_agent(user_goal: str):
-    logs = []
-    try:
-        plan_res = client.chat.completions.create(
-            model="openai/gpt-oss-20b",
-            messages=[{"role": "system", "content": "You are laptop expert."}, {"role": "user", "content": f"Goal: {user_goal}. Make plan."}]
-        )
-        plan = plan_res.choices[0].message.content
-        logs.append(f"🧠 PLAN: {plan}")
-        search_result = search_web(user_goal)
-        logs.append(f"🔧 Searched: {user_goal}")
-        logs.append(f"👀 Found: {search_result[:300]}")
-        final = client.chat.completions.create(
-            model="openai/gpt-oss-20b",
-            messages=[{"role": "system", "content": "Give top 3 laptops in table."}, {"role": "user", "content": f"Goal:{user_goal} Search:{search_result}"}]
-        )
-        return {"logs": logs, "answer": final.choices[0].message.content}
-    except Exception as e:
-        return {"logs": [f"ERROR: {e} - Check your GROQ key in.env file! Current key: {os.getenv('GROQ_API_KEY')[:10]}..."], "answer": f"Error: {e}"}
+    # Step 2: Create context for LLM
+    context = f"""
+    User Tracking Request: {user_query}
+    Competitor: {competitor}
+
+    RESEARCH PAPERS: {str(research)[:3000]}
+    PATENTS: {str(patents)[:3000]}
+    INDUSTRY NEWS: {str(industry)[:3000]}
+    COMPETITOR NEWS: {str(comp_data)[:3000] if comp_data else 'None'}
+    """
+
+    # Step 3: Generate actionable insights
+    prompt = f"""
+    You are a Research & Competitor Tracking Agent.
+    Analyze the data and give:
+    1. Top 3 Research Trends (concise)
+    2. Patent Insights - what competitors are patenting
+    3. Competitor Moves - funding, launches
+    4. Actionable Opportunities & Threats
+    5. Real-time Recommendation
+
+    Data:
+    {context}
+
+    Format in clean markdown with emojis.
+    Be concise, actionable, real-time focused.
+    """
+
+    completion = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
+
+    insights = completion.choices[0].message.content
+
+    return {
+        "query": user_query,
+        "competitor": competitor,
+        "research": research,
+        "patents": patents,
+        "industry": industry,
+        "competitor_data": comp_data,
+        "insights": insights
+    }
