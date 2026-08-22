@@ -4,71 +4,44 @@ import { useState } from "react";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [competitor, setCompetitor] = useState("");
+  const [out, setOut] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any>(null);
 
-  const handleTrack = async () => {
+  async function track() {
+    if (!query || !competitor) { alert("Fill both fields"); return; }
     setLoading(true);
+    setOut("");
     try {
-      const res = await fetch("https://hackathon-agent-final.onrender.com/track", {
+      const res = await fetch("http://localhost:8000/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, competitor }),
       });
-      const json = await res.json();
-      setData(json);
+      const data = await res.json();
+      setOut(data.insights || JSON.stringify(data, null, 2));
     } catch (e) {
-      alert("Backend waking up, try again in 30 sec (Render free tier)");
+      alert("Start backend first! " + e);
     }
     setLoading(false);
-  };
+  }
 
-  return (
-    <div style={{ padding: 20, fontFamily: "sans-serif", background: "#0a0a0a", color: "white", minHeight: "100vh" }}>
-      <h1>🔍 Research & Competitor Tracking Agent</h1>
-      <p style={{ color: "#aaa" }}>Autonomous AI for real-time insights</p>
-
-      <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-        <input
-          placeholder="What to track? e.g., Generative AI in Drug Discovery"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 2, padding: 12, borderRadius: 8, border: "none" }}
-        />
-        <input
-          placeholder="Competitor e.g., DeepMind"
-          value={competitor}
-          onChange={(e) => setCompetitor(e.target.value)}
-          style={{ flex: 1, padding: 12, borderRadius: 8, border: "none" }}
-        />
-        <button onClick={handleTrack} style={{ padding: "12px 24px", background: "#6366f1", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
-          {loading ? "Tracking..." : "Track Now"}
+    return (
+    <div style={{ maxWidth: 600, margin: "50px auto", padding: 20, fontFamily: "system-ui", minHeight: "100vh", background: "#fafafa", color: "#000" }}>
+      <h1 style={{ textAlign: "center", color: "#000" }}>🔍 Research Agent</h1>
+      <p style={{ textAlign: "center", color: "#666" }}>Track any topic + competitor</p>
+      
+      <div style={{ background: "#fff", padding: 24, borderRadius: 16, boxShadow: "0 4px 20px #0001" }}>
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Topic: e.g. Generative AI"
+          style={{ width: "100%", padding: 14, margin: "8px 0", borderRadius: 10, border: "1px solid #ddd", fontSize: 16, background: "#fff", color: "#000" }} />
+        <input value={competitor} onChange={e => setCompetitor(e.target.value)} placeholder="Competitor: e.g. OpenAI"
+          style={{ width: "100%", padding: 14, margin: "8px 0", borderRadius: 10, border: "1px solid #ddd", fontSize: 16, background: "#fff", color: "#000" }} />
+        <button onClick={track} style={{ width: "100%", padding: 14, marginTop: 10, borderRadius: 10, background: "#000", color: "#fff", fontWeight: 600, cursor: "pointer", fontSize: 16 }}>
+          Track Research
         </button>
       </div>
 
-      {data && (
-        <div style={{ marginTop: 30 }}>
-          <div style={{ background: "#1a1a1a", padding: 20, borderRadius: 12, whiteSpace: "pre-wrap" }}>
-            <h2>💡 Actionable Insights</h2>
-            <p>{data.insights}</p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 15, marginTop: 20 }}>
-            <div style={{ background: "#1a1a1a", padding: 15, borderRadius: 12 }}>
-              <h3>📚 Research</h3>
-              <p style={{ fontSize: 12, color: "#aaa" }}>{JSON.stringify(data.research?.data?.results?.slice(0,2) || data.research, null, 2).slice(0, 800)}</p>
-            </div>
-            <div style={{ background: "#1a1a1a", padding: 15, borderRadius: 12 }}>
-              <h3>📜 Patents</h3>
-              <p style={{ fontSize: 12, color: "#aaa" }}>{JSON.stringify(data.patents?.data?.results?.slice(0,2) || data.patents, null, 2).slice(0, 800)}</p>
-            </div>
-            <div style={{ background: "#1a1a1a", padding: 15, borderRadius: 12 }}>
-              <h3>🏢 Competitor</h3>
-              <p style={{ fontSize: 12, color: "#aaa" }}>{JSON.stringify(data.competitor_data?.data?.results?.slice(0,2) || data.competitor_data || data.industry, null, 2).slice(0, 800)}</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {loading && <div style={{ textAlign: "center", marginTop: 20, color: "#000" }}>⏳ Researching... 10 sec</div>}
+      {out && <div style={{ whiteSpace: "pre-wrap", background: "#fff", color: "#000", padding: 20, borderRadius: 16, marginTop: 20, lineHeight: 1.7, boxShadow: "0 4px 20px #0001", border: "1px solid #eee" }}>{out}</div>}
     </div>
   );
 }

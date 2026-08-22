@@ -1,7 +1,4 @@
+backend/venv/
 node_modules/
 .env
-__pycache__/
 my-app/.next/
-my-app/node_modules/
-venv/
-backend/venv/

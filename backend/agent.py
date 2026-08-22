@@ -1,60 +1,43 @@
 import os
 from groq import Groq
 from dotenv import load_dotenv
-from tools import research_paper_search, patent_search, competitor_news_search, social_and_industry_scan
+from tools import search_news, search_research, search_patents
 
 load_dotenv()
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def run_agent(user_query: str, competitor: str = ""):
-    # Step 1: Gather data from all sources in parallel
-    research = research_paper_search(user_query)
-    patents = patent_search(user_query)
-    industry = social_and_industry_scan(user_query)
-    comp_data = competitor_news_search(competitor) if competitor else None
+def run_agent(query, competitor):
+    news = search_news(query, competitor)
+    research = search_research(query)
+    patents = search_patents(query, competitor)
 
-    # Step 2: Create context for LLM
-    context = f"""
-    User Tracking Request: {user_query}
+    prompt = f"""
+    Topic: {query}
     Competitor: {competitor}
 
-    RESEARCH PAPERS: {str(research)[:3000]}
-    PATENTS: {str(patents)[:3000]}
-    INDUSTRY NEWS: {str(industry)[:3000]}
-    COMPETITOR NEWS: {str(comp_data)[:3000] if comp_data else 'None'}
+    NEWS: {news[:3000]}
+    RESEARCH: {research[:3000]}
+    PATENTS: {patents[:3000]}
+
+    Write a clear summary with:
+    1. Key Insights (3 points)
+    2. Recent Developments
+    3. Competitive Threats
+    4. Opportunities
+    Keep it short and simple.
     """
 
-    # Step 3: Generate actionable insights
-    prompt = f"""
-    You are a Research & Competitor Tracking Agent.
-    Analyze the data and give:
-    1. Top 3 Research Trends (concise)
-    2. Patent Insights - what competitors are patenting
-    3. Competitor Moves - funding, launches
-    4. Actionable Opportunities & Threats
-    5. Real-time Recommendation
-
-    Data:
-    {context}
-
-    Format in clean markdown with emojis.
-    Be concise, actionable, real-time focused.
-    """
-
-    completion = groq_client.chat.completions.create(
+    completion = client.chat.completions.create(
         model="openai/gpt-oss-20b",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.7
+        temperature=0.6
     )
 
-    insights = completion.choices[0].message.content
-
     return {
-        "query": user_query,
+        "query": query,
         "competitor": competitor,
+        "insights": completion.choices[0].message.content,
+        "news": news,
         "research": research,
-        "patents": patents,
-        "industry": industry,
-        "competitor_data": comp_data,
-        "insights": insights
+        "patents": patents
     }
