@@ -5,7 +5,7 @@ TEAM MEMBERS
 - NILESH KALE (Backend Developer )
 - SAMIKSHA GONDKAR ( Frontend Developer )
 - TANISHKA SHINDE (AI/Research)
-- 
+
 PROBLEM STATEMENT
 
 -Startups waste hours tracking competitors, news, papers, patents. No single tool gives quick Al-summarized competitive intelligence.
