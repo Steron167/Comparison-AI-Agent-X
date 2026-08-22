@@ -32,6 +32,6 @@ uvicorn main:app --reload --port 8000
 Frontend:
 npm run dev
 Open
-http://localhost:3000 > Enter Topic + Competitor > Track
-DEMO LINKS
-GitHub: github.com/Steron167/Comparison-Al-Agent-X
+http://localhost:3000
+> Enter Topic + Competitor > Track
+
