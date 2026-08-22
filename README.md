@@ -36,3 +36,5 @@ Tavily Api - Real time google search for agent
 GROG Api - Takes tavily raw data -> thinks -> writes final report
 
 WEB ACCESS LINK :- https://comparison-ai-agent-x.vercel.app
+
+EVALUATION LINK :- https://ai-second-brain-nu.vercel.app/evaluation
